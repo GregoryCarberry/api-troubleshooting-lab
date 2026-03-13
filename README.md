@@ -32,8 +32,8 @@ This project is intentionally split across multiple repositories to model a real
 
 Repositories:
 
-- Gateway service: https://github.com/<your-username>/api-troubleshooting-lab-gateway
-- Backend service: https://github.com/<your-username>/api-troubleshooting-lab-backend
+- Gateway service: https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway
+- Backend service: https://github.com/GregoryCarberry/api-troubleshooting-lab-backend
 
 ---
 
