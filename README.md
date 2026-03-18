@@ -1,149 +1,203 @@
-
 # API Troubleshooting Lab
 
-A multi-repository lab environment designed to simulate and troubleshoot real-world API integration issues.  
-The system models a common production architecture where requests flow through an **API gateway layer** before reaching a **backend processing service**.
+A multi-service troubleshooting lab built to replicate the kind of API issues that show up in real environments: authentication failures, rate limiting, malformed payloads, upstream errors, timeouts, request tracing gaps, and the need to prove behaviour with tests rather than assumptions.
 
-This repository acts as the **hub and architectural overview** for the entire project.
+This repository is the **hub** for the project. It ties together the gateway and backend services, explains the architecture, and gives a single entry point for understanding how the lab works.
 
----
+## Why I built this
 
-## Architecture Overview
+A lot of API projects only show the happy path. That is not how production systems behave.
+
+I built this lab to demonstrate practical troubleshooting across service boundaries:
+
+- following a request from entry point to backend response
+- distinguishing gateway issues from backend issues
+- reproducing failures intentionally instead of waiting for them to happen by chance
+- validating behaviour with automated tests
+- making debugging easier with structured logs and request IDs
+
+## Architecture
 
 ![API Troubleshooting Lab Architecture](diagrams/api-troubleshooting-lab-architecture.svg)
 
-The architecture intentionally separates concerns between a gateway layer and a backend service to replicate real-world API environments.
+### Request flow
 
-**Flow:**
+```text
+Client
+  │
+  ▼
+API Gateway (FastAPI)
+  │
+  ▼
+Backend API (Flask)
+  │
+  ▼
+Response
+```
 
-Client → API Gateway → Backend API → Response
+## Repositories
 
----
-
-## Repository Structure
-
-This project is intentionally split across multiple repositories to model a realistic multi-service architecture.
+This project is intentionally split into separate repositories to reflect a more realistic service layout.
 
 | Repository | Purpose |
-|------------|--------|
-| **api-troubleshooting-lab** | Architecture overview and documentation (this repository) |
-| **api-troubleshooting-lab-gateway** | Gateway service responsible for request authentication, rate limiting, and tracing |
-| **api-troubleshooting-lab-backend** | Backend API responsible for XML payload processing, validation, and failure simulation |
+|---|---|
+| **api-troubleshooting-lab** | Hub repository for architecture, overview, and shared documentation |
+| **api-troubleshooting-lab-gateway** | FastAPI gateway handling authentication, rate limiting, request forwarding, and upstream error handling |
+| **api-troubleshooting-lab-backend** | Flask backend handling XML validation, order processing, failure simulation, and trace-aware responses |
 
-Repositories:
+- Gateway service: `https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway`
+- Backend service: `https://github.com/GregoryCarberry/api-troubleshooting-lab-backend`
 
-- Gateway service: https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway
-- Backend service: https://github.com/GregoryCarberry/api-troubleshooting-lab-backend
+## Quick start
 
----
+To run the full system locally:
 
-## System Components
+1. clone both repositories:
+   - gateway: https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway
+   - backend: https://github.com/GregoryCarberry/api-troubleshooting-lab-backend
 
-### API Client
+2. start the backend service
 
-Requests are issued using common API tooling such as:
+3. start the gateway service
 
-- `curl`
-- Postman
-- automated test scripts
+4. send requests via Postman using the collection in the gateway repository
 
-These tools simulate external consumers of the API.
+Default:
+- gateway runs on `http://127.0.0.1:8000`
+- API key: `lab-demo-key`
 
----
+See the gateway repository for full setup instructions and Postman collection.
 
-### API Gateway (FastAPI)
+## What the system demonstrates
 
-The gateway acts as the **edge layer** controlling access to backend services.
+### Gateway concerns
 
-Responsibilities:
+The gateway acts as the control layer in front of the backend. It is responsible for:
 
 - API key authentication
 - rate limiting
-- request tracing
-- forwarding validated requests to the backend
+- request ID generation and propagation
+- proxying requests to the backend
+- converting upstream failures into appropriate client responses
+- structured logging for request-level observability
 
-This layer mirrors real-world API gateway behaviour used in production systems.
+### Backend concerns
 
----
+The backend handles application logic and failure simulation. It is responsible for:
 
-### Backend API (Flask)
+- XML request handling
+- validation of structure and values
+- in-memory order storage for repeatable testing
+- simulated failure modes for troubleshooting exercises
+- returning consistent trace headers in responses
+- structured logging tied to the same request ID used by the gateway
 
-The backend service processes incoming requests and intentionally exposes scenarios that commonly cause integration issues.
+## Failure scenarios covered
 
-Responsibilities:
+This lab is built around situations that are actually useful to debug.
 
-- XML payload handling
-- request validation
-- simulated integration failures for troubleshooting exercises
+### Gateway-side issues
 
-This enables the lab to reproduce realistic debugging situations.
+- missing API key
+- invalid API key
+- rate limit exceeded
+- backend unavailable
+- backend timeout
 
----
+### Backend-side issues
 
-## Request Flow
+- malformed XML
+- missing fields
+- invalid values
+- unsupported content type
+- simulated dependency failure
+- simulated timeout
+- simulated internal exception
+- not found responses for missing orders
 
-1. A client sends an API request.
-2. The request reaches the **API Gateway**.
-3. The gateway validates authentication and applies rate limits.
-4. Valid requests are forwarded to the **Backend API**.
-5. The backend processes the XML payload and returns a response.
-6. The gateway returns the response to the client.
+## Observability
 
----
+The project uses two simple but effective observability patterns:
 
-## Skills Demonstrated
+### Structured JSON logging
 
-This project demonstrates practical knowledge in:
+Both services emit structured logs to make request analysis easier and reduce noisy, unhelpful output.
 
-- API gateway architecture
-- request validation and tracing
-- XML payload processing
-- FastAPI service design
-- Flask backend service development
-- multi-repository project structure
-- debugging and troubleshooting API integrations
+### `X-Request-ID` tracing
 
----
+A request ID is generated at the gateway if one is not already present, forwarded to the backend, included in response headers, and written into both services' logs.
 
-## Repository Layout
+That makes it possible to correlate one request across the full path:
 
+```text
+client → gateway log → backend log → response header
 ```
-api-troubleshooting-lab
-├── diagrams/       # Architecture diagrams used across the project
-├── docs/           # Detailed technical documentation
-├── screenshots/    # Visual examples of system behaviour
-└── README.md       # Project overview (this file)
+
+## Testing
+
+Both service repositories include test coverage.
+
+The tests cover:
+
+- success paths
+- validation failures
+- injected failure modes
+- request tracing behaviour
+- gateway to backend behaviour
+
+This matters because the project does not rely on manual checking alone. Expected behaviour is verified.
+
+## Typical troubleshooting workflow
+
+A typical investigation in this lab looks like this:
+
+1. send a request through the gateway
+2. inspect the returned status and `X-Request-ID`
+3. check gateway logs for authentication, routing, or upstream handling
+4. check backend logs for payload validation or simulated service failures
+5. confirm the issue source and reproduce it with a controlled test case
+
+That workflow is the real value of the project.
+
+## Repository layout
+
+```text
+api-troubleshooting-lab/
+├── diagrams/
+│   └── api-troubleshooting-lab-architecture.svg
+├── docs/
+├── screenshots/
+└── README.md
 ```
 
-System-level diagrams are stored here and referenced by the other repositories to avoid duplication.
+## Who this project is for
 
----
+This project is aimed at:
 
-## Purpose of the Lab
+- technical support and service desk roles
+- cloud support roles
+- junior platform or DevOps roles
+- anyone who needs to show they can debug systems rather than just build endpoints
 
-The goal of this project is to create a controlled environment for experimenting with:
+## Current state
 
-- API gateway behaviour
-- integration debugging
-- payload validation failures
-- realistic request/response flows
+The lab is already in a strong state:
 
-The lab is designed to grow over time as additional troubleshooting scenarios and tooling are introduced.
+- multi-service architecture is working
+- request tracing is implemented end to end
+- structured logging is in place
+- failure simulation works
+- tests exist across both services
+- READMEs for gateway and backend are already aligned
 
----
+## Next stage
 
-## Future Enhancements
+The next presentation pieces for this project are:
 
-Potential future additions include:
-
-- containerised deployment of the services
-- automated integration test scenarios
-- structured logging and metrics
-- distributed tracing
-- infrastructure-as-code deployment examples
-
----
+- a Postman collection for clean demonstrations
+- portfolio integration with screenshots and narrative
+- a LinkedIn post built around troubleshooting and observability
 
 ## License
 
-This project is provided for educational and demonstration purposes.
+This project is provided for educational and portfolio purposes.
