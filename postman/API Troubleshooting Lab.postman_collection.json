@@ -57,16 +57,15 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
-            "description": "Expected result: order created successfully through the gateway and backend."
+            "description": "Expected result: 201 Created. Order is created through the gateway and backend."
           },
           "response": []
         }
@@ -101,12 +100,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -145,12 +143,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -194,12 +191,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -238,12 +234,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -282,12 +277,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -326,12 +320,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -380,12 +373,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -429,12 +421,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -478,12 +469,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
@@ -527,12 +517,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/orders",
+              "raw": "{{base_url}}/orders",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "api",
                 "orders"
               ]
             },
