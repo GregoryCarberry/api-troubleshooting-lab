@@ -1,6 +1,6 @@
 # API Troubleshooting Lab
 
-A multi-service troubleshooting lab built to replicate the kind of API issues that show up in real environments: authentication failures, rate limiting, malformed payloads, upstream errors, timeouts, request tracing gaps, and the need to prove behaviour with tests rather than assumptions.
+A multi-service troubleshooting lab built with a FastAPI gateway and Flask backend to replicate the kind of API issues that show up in real environments: authentication failures, rate limiting, malformed payloads, upstream errors, timeouts, request tracing gaps, and the need to prove behaviour with tests rather than assumptions.
 
 This repository is the **hub** for the project. It ties together the gateway and backend services, explains the architecture, and gives a single entry point for understanding how the lab works.
 
@@ -45,16 +45,16 @@ This project is intentionally split into separate repositories to reflect a more
 | **api-troubleshooting-lab-gateway** | FastAPI gateway handling authentication, rate limiting, request forwarding, and upstream error handling |
 | **api-troubleshooting-lab-backend** | Flask backend handling XML validation, order processing, failure simulation, and trace-aware responses |
 
-- Gateway service: `https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway`
-- Backend service: `https://github.com/GregoryCarberry/api-troubleshooting-lab-backend`
+- Gateway service: [api-troubleshooting-lab-gateway](https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway)
+- Backend service: [api-troubleshooting-lab-backend](https://github.com/GregoryCarberry/api-troubleshooting-lab-backend)
 
 ## Quick start
 
 To run the full system locally:
 
 1. clone both repositories:
-   - gateway: https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway
-   - backend: https://github.com/GregoryCarberry/api-troubleshooting-lab-backend
+   - gateway: [api-troubleshooting-lab-gateway](https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway)
+   - backend: [api-troubleshooting-lab-backend](https://github.com/GregoryCarberry/api-troubleshooting-lab-backend)
 
 2. start the backend service
 
@@ -159,6 +159,20 @@ A typical investigation in this lab looks like this:
 
 That workflow is the real value of the project.
 
+
+## Skills demonstrated
+
+- API troubleshooting
+- HTTP status code analysis
+- FastAPI and Flask
+- request tracing across service boundaries
+- structured JSON logging
+- pytest-based testing
+- controlled failure simulation
+- gateway and backend debugging
+- Postman-based API testing
+- clear technical documentation
+
 ## Repository layout
 
 ```text
@@ -192,11 +206,12 @@ The lab is already in a strong state:
 
 ## Next stage
 
-The next presentation pieces for this project are:
+The next presentation improvements for this project are:
 
-- a Postman collection for clean demonstrations
-- portfolio integration with screenshots and narrative
-- a LinkedIn post built around troubleshooting and observability
+- confirm the Postman collection is clean, reusable, and easy to demo
+- add screenshots showing successful requests, failure responses, logs, and test output
+- integrate the project into my portfolio with a clear problem → solution → proof narrative
+- write a LinkedIn post built around troubleshooting, observability, and test-backed debugging
 
 ## License
 
