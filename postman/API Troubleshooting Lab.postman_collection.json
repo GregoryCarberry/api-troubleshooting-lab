@@ -1,0 +1,546 @@
+{
+  "info": {
+    "_postman_id": "00000000-0000-0000-0000-api-troubleshooting-lab",
+    "name": "API Troubleshooting Lab",
+    "description": "Clean demo collection for the API Troubleshooting Lab. Covers success paths, authentication failures, validation failures, backend failure simulation, and gateway behaviour.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "lab-demo-key",
+      "type": "string"
+    },
+    {
+      "key": "request_id",
+      "value": "postman-demo-{{$timestamp}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Success Path",
+      "item": [
+        {
+          "name": "Create Order - Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: order created successfully through the gateway and backend."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Authentication Failures",
+      "item": [
+        {
+          "name": "Create Order - Missing API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: gateway rejects the request because X-API-Key is missing."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order - Invalid API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "invalid-api-key",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: gateway rejects the request because X-API-Key is invalid."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Validation Failures",
+      "item": [
+        {
+          "name": "Create Order - Wrong Content-Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"CustomerID\":\"12345\",\"ProductID\":\"ABC123\",\"Quantity\":2}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: request is rejected because the API expects application/xml."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order - Malformed XML",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: backend rejects malformed XML."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order - Missing Field",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: backend rejects the request because ProductID is missing."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order - Invalid Quantity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>zero</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: backend rejects the request because Quantity is invalid."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Backend Failure Simulation",
+      "item": [
+        {
+          "name": "Backend Failure - Dependency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Failure-Mode",
+                "value": "dependency",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: simulated backend dependency failure."
+          },
+          "response": []
+        },
+        {
+          "name": "Backend Failure - Timeout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Failure-Mode",
+                "value": "timeout",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: simulated timeout path."
+          },
+          "response": []
+        },
+        {
+          "name": "Backend Failure - Exception",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Failure-Mode",
+                "value": "exception",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Expected result: simulated backend internal exception."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Gateway Behaviour",
+      "item": [
+        {
+          "name": "Rate Limit Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{request_id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<Order>\n  <CustomerID>12345</CustomerID>\n  <ProductID>ABC123</ProductID>\n  <Quantity>2</Quantity>\n</Order>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Send repeatedly in quick succession to demonstrate gateway rate limiting. Exact threshold depends on the gateway configuration."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

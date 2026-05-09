@@ -2,7 +2,7 @@
 
 A multi-service troubleshooting lab built with a FastAPI gateway and Flask backend to replicate the kind of API issues that show up in real environments: authentication failures, rate limiting, malformed payloads, upstream errors, timeouts, request tracing gaps, and the need to prove behaviour with tests rather than assumptions.
 
-This repository is the **hub** for the project. It ties together the gateway and backend services, explains the architecture, and gives a single entry point for understanding how the lab works.
+This repository is the **hub** for the project. It ties together the gateway and backend services, explains the architecture, and provides the shared demo assets for the lab.
 
 ## Why I built this
 
@@ -41,7 +41,7 @@ This project is intentionally split into separate repositories to reflect a more
 
 | Repository | Purpose |
 |---|---|
-| **api-troubleshooting-lab** | Hub repository for architecture, overview, and shared documentation |
+| **api-troubleshooting-lab** | Hub repository for architecture, overview, shared documentation, and demo assets |
 | **api-troubleshooting-lab-gateway** | FastAPI gateway handling authentication, rate limiting, request forwarding, and upstream error handling |
 | **api-troubleshooting-lab-backend** | Flask backend handling XML validation, order processing, failure simulation, and trace-aware responses |
 
@@ -52,21 +52,60 @@ This project is intentionally split into separate repositories to reflect a more
 
 To run the full system locally:
 
-1. clone both repositories:
+1. Clone both service repositories:
    - gateway: [api-troubleshooting-lab-gateway](https://github.com/GregoryCarberry/api-troubleshooting-lab-gateway)
    - backend: [api-troubleshooting-lab-backend](https://github.com/GregoryCarberry/api-troubleshooting-lab-backend)
 
-2. start the backend service
+2. Start the backend service.
 
-3. start the gateway service
+3. Start the gateway service.
 
-4. send requests via Postman using the collection in the gateway repository
+4. Import the Postman collection from this hub repository:
 
-Default:
-- gateway runs on `http://127.0.0.1:8000`
+```text
+postman/API Troubleshooting Lab.postman_collection.json
+```
+
+5. Send requests through the gateway.
+
+Default values:
+
+- Gateway URL: `http://127.0.0.1:8000`
+- Backend URL: `http://127.0.0.1:5000`
 - API key: `lab-demo-key`
+- Main gateway endpoint: `POST /orders`
 
-See the gateway repository for full setup instructions and Postman collection.
+See the gateway and backend repositories for service-specific setup instructions.
+
+## Postman demo collection
+
+This repository includes a clean Postman collection for demonstrating the lab:
+
+```text
+postman/API Troubleshooting Lab.postman_collection.json
+```
+
+The collection is organised into demo sections:
+
+```text
+01 - Success Path
+02 - Authentication Failures
+03 - Validation Failures
+04 - Backend Failure Simulation
+05 - Gateway Behaviour
+```
+
+The collection sends requests to the gateway at:
+
+```text
+{{base_url}}/orders
+```
+
+with the default collection variable:
+
+```text
+base_url = http://127.0.0.1:8000
+```
 
 ## What the system demonstrates
 
@@ -115,9 +154,29 @@ This lab is built around situations that are actually useful to debug.
 - simulated internal exception
 - not found responses for missing orders
 
+## Validated demo responses
+
+The Postman collection has been tested against the local lab with the backend running on port `5000` and the gateway running on port `8000`.
+
+Confirmed responses:
+
+| Scenario | Status |
+|---|---|
+| Success path | `201 Created` |
+| Missing API key | `401 Unauthorized` |
+| Invalid API key | `403 Forbidden` |
+| Wrong content type | `415 Unsupported Media Type` |
+| Malformed XML | `400 Bad Request` |
+| Missing `ProductID` | `422 Unprocessable Content` |
+| Invalid `Quantity` | `422 Unprocessable Content` |
+| Simulated dependency failure | `503 Service Unavailable` |
+| Simulated backend timeout | `504 Gateway Timeout` |
+| Simulated backend exception | `500 Internal Server Error` |
+| Rate limit exceeded | `429 Too Many Requests` |
+
 ## Observability
 
-The project uses two simple but effective observability patterns:
+The project uses two simple but effective observability patterns.
 
 ### Structured JSON logging
 
@@ -151,14 +210,13 @@ This matters because the project does not rely on manual checking alone. Expecte
 
 A typical investigation in this lab looks like this:
 
-1. send a request through the gateway
-2. inspect the returned status and `X-Request-ID`
-3. check gateway logs for authentication, routing, or upstream handling
-4. check backend logs for payload validation or simulated service failures
-5. confirm the issue source and reproduce it with a controlled test case
+1. Send a request through the gateway.
+2. Inspect the returned status and `X-Request-ID`.
+3. Check gateway logs for authentication, routing, or upstream handling.
+4. Check backend logs for payload validation or simulated service failures.
+5. Confirm the issue source and reproduce it with a controlled test case.
 
 That workflow is the real value of the project.
-
 
 ## Skills demonstrated
 
@@ -180,6 +238,8 @@ api-troubleshooting-lab/
 ├── diagrams/
 │   └── api-troubleshooting-lab-architecture.svg
 ├── docs/
+├── postman/
+│   └── API Troubleshooting Lab.postman_collection.json
 ├── screenshots/
 └── README.md
 ```
@@ -195,20 +255,20 @@ This project is aimed at:
 
 ## Current state
 
-The lab is already in a strong state:
+The lab is now in a strong working state:
 
 - multi-service architecture is working
 - request tracing is implemented end to end
 - structured logging is in place
 - failure simulation works
 - tests exist across both services
-- READMEs for gateway and backend are already aligned
+- READMEs for gateway and backend are aligned
+- Postman collection has been cleaned and validated
 
 ## Next stage
 
-The next presentation improvements for this project are:
+The remaining presentation improvements are:
 
-- confirm the Postman collection is clean, reusable, and easy to demo
 - add screenshots showing successful requests, failure responses, logs, and test output
 - integrate the project into my portfolio with a clear problem → solution → proof narrative
 - write a LinkedIn post built around troubleshooting, observability, and test-backed debugging
