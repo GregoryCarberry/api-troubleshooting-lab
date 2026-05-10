@@ -41,7 +41,7 @@ This project is intentionally split into separate repositories to reflect a more
 
 | Repository | Purpose |
 |---|---|
-| **api-troubleshooting-lab** | Hub repository for architecture, overview, shared documentation, and demo assets |
+| **api-troubleshooting-lab** | Hub repository for architecture, overview, shared documentation, Postman collection, and demo screenshots |
 | **api-troubleshooting-lab-gateway** | FastAPI gateway handling authentication, rate limiting, request forwarding, and upstream error handling |
 | **api-troubleshooting-lab-backend** | Flask backend handling XML validation, order processing, failure simulation, and trace-aware responses |
 
@@ -77,6 +77,18 @@ Default values:
 
 See the gateway and backend repositories for service-specific setup instructions.
 
+## Demo assets
+
+This hub repository contains the shared assets used to demonstrate and review the lab.
+
+| Asset | Location | Purpose |
+|---|---|---|
+| Architecture diagram | `diagrams/` | Shows the high-level gateway and backend request flow |
+| Postman collection | `postman/` | Provides repeatable success and failure scenarios |
+| Screenshots | `screenshots/` | Shows representative request/response behaviour, local service output, and test results |
+
+The screenshots are supporting evidence, not the source of truth. The code, automated tests, and Postman collection remain the authoritative project artefacts.
+
 ## Postman demo collection
 
 This repository includes a clean Postman collection for demonstrating the lab:
@@ -106,6 +118,30 @@ with the default collection variable:
 ```text
 base_url = http://127.0.0.1:8000
 ```
+
+## Screenshot evidence
+
+The screenshot set provides quick visual proof that the lab runs locally and that the main behaviours have been exercised.
+
+```text
+screenshots/
+├── postman/
+├── terminal/
+└── test-output/
+```
+
+The screenshots cover a representative spread of scenarios:
+
+- successful gateway request
+- authentication failures
+- validation failures
+- simulated backend failures
+- timeout handling
+- rate limiting
+- backend and gateway services running locally
+- backend and gateway test output
+
+The screenshot set is intentionally selective. It shows the important behaviours without duplicating every scenario already covered by the Postman collection and automated tests.
 
 ## What the system demonstrates
 
@@ -241,6 +277,10 @@ api-troubleshooting-lab/
 ├── postman/
 │   └── API Troubleshooting Lab.postman_collection.json
 ├── screenshots/
+│   ├── README.md
+│   ├── postman/
+│   ├── terminal/
+│   └── test-output/
 └── README.md
 ```
 
@@ -264,12 +304,12 @@ The lab is now in a strong working state:
 - tests exist across both services
 - READMEs for gateway and backend are aligned
 - Postman collection has been cleaned and validated
+- representative screenshots have been added for demo and portfolio review
 
 ## Next stage
 
 The remaining presentation improvements are:
 
-- add screenshots showing successful requests, failure responses, logs, and test output
 - integrate the project into my portfolio with a clear problem → solution → proof narrative
 - write a LinkedIn post built around troubleshooting, observability, and test-backed debugging
 
